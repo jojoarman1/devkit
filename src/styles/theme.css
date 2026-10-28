@@ -1,0 +1,92 @@
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+
+  /* The UI is specced in Figma px and written in em: 1em = 1 Figma px × this scale.
+     The fixed window size in tauri.conf.json is the Figma frame (1778 × 1496) × this value; change both together. */
+  --text-card-unit: 0.5px;
+
+  /* Figma: radius 80 + 60% corner smoothing. A squircle needs a larger radius to cover the same smoothed span. */
+  --radius-card: 132em;
+
+  /* dark inner vignette + faint top highlight, as on the reference cards; em = Figma px.
+     Colors go through plain vars because Tailwind inlines shadow values, so a themed token couldn't be overridden. */
+  --inset-shadow-card: inset 0 0 24em var(--card-vignette), inset 0 1em 0 var(--card-highlight);
+
+  --text-metric-title: 84em;
+  --text-metric-title--line-height: 1;
+  --text-metric-title--letter-spacing: -0.05em;
+  --text-metric-status: 42em;
+  --text-metric-status--line-height: 1;
+  --text-metric-status--letter-spacing: -0.06em;
+  --text-metric-row: 30em;
+  --text-metric-row--line-height: 1;
+  --text-metric-row--letter-spacing: -0.04em;
+
+  --color-background: #000000;
+  --color-card: #1a1a1a;
+  --color-card-raised: #262626;
+  /* a faint edge; solid #787878 was too harsh on the dark card */
+  --color-card-stroke: rgb(255 255 255 / 0.08);
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-dot: rgb(255 255 255 / 0.06);
+
+  --color-foreground: #f4f4f4;
+  --color-muted: #8c8c8c;
+  --color-subtle: #555555;
+
+  --color-accent: #d9ff3f;
+  --color-accent-foreground: #070707;
+
+  --color-success: #3ddc84;
+  --color-warning: #ff8a1f;
+  --color-danger: #ff3d7a;
+
+  /* in-card buttons (RAM Clear); light theme: #787878 at 20% as specified by the user */
+  --color-button: rgb(255 255 255 / 0.06);
+  --color-button-hover: rgb(255 255 255 / 0.1);
+  --color-button-pressed: rgb(255 255 255 / 0.04);
+
+  /* Windows 11 caption button colors (dark theme here, light below) (SubtleFill secondary/tertiary, close red), so the custom caption matches native windows */
+  --color-caption-hover: rgb(255 255 255 / 0.0605);
+  --color-caption-pressed: rgb(255 255 255 / 0.0419);
+  --color-caption-close: #c42b1c;
+  --color-caption-close-pressed: rgb(196 43 28 / 0.9);
+
+  /* Windows UAC shield quadrants: marks actions that need administrator rights */
+  --color-shield-blue: #1e73e8;
+  --color-shield-yellow: #ffc83d;
+}
+
+/* plain vars without utilities: the card shadow colors */
+:root {
+  --card-vignette: rgb(0 0 0 / 0.2);
+  --card-highlight: rgb(255 255 255 / 0.04);
+}
+
+/* The theme follows the Windows app theme. Dark is the default above; light overrides only what differs.
+   Unlayered :root beats Tailwind's layered @theme output. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-background: #e6e6e6;
+    --color-card: #ffffff;
+    --color-card-raised: #f0f0f0;
+    --color-card-stroke: #dcdcdc;
+    --color-line: rgb(0 0 0 / 0.08);
+    --color-dot: rgb(0 0 0 / 0.06);
+
+    --color-foreground: #0a0a0a;
+    --color-muted: #6e6e6e;
+    --color-subtle: #a3a3a3;
+
+    --color-button: rgb(120 120 120 / 0.2);
+    --color-button-hover: rgb(120 120 120 / 0.28);
+    --color-button-pressed: rgb(120 120 120 / 0.14);
+
+    /* Windows 11 light-theme caption fills; close stays red */
+    --color-caption-hover: rgb(0 0 0 / 0.0373);
+    --color-caption-pressed: rgb(0 0 0 / 0.0241);
+
+    --card-vignette: rgb(0 0 0 / 0.03);
+    --card-highlight: rgb(255 255 255 / 0.8);
+  }
+}

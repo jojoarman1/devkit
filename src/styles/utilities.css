@@ -1,0 +1,4 @@
+/* engines without corner-shape support (WKWebView on macOS, WebKitGTK) fall back to the plain circular radius */
+@utility corner-squircle {
+  corner-shape: squircle;
+}
