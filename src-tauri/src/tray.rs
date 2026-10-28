@@ -18,6 +18,21 @@ pub fn show_main_window(app: &AppHandle) {
     }
 }
 
+// Global shortcut: hide when devkit is in front, otherwise bring it forward
+pub fn toggle_main_window(app: &AppHandle) {
+    let Some(window) = app.get_webview_window("main") else {
+        return;
+    };
+    let is_in_front = window.is_visible().unwrap_or(false)
+        && !window.is_minimized().unwrap_or(false)
+        && window.is_focused().unwrap_or(false);
+    if is_in_front {
+        let _ = window.hide();
+    } else {
+        show_main_window(app);
+    }
+}
+
 pub fn create(app: &App) -> tauri::Result<()> {
     let show = MenuItem::with_id(app, SHOW_ITEM_ID, "Show devkit", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, QUIT_ITEM_ID, "Quit", true, None::<&str>)?;

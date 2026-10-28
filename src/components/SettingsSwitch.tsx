@@ -7,7 +7,12 @@ interface SettingsSwitchProps {
   onToggle: () => void
 }
 
-export const SettingsSwitch = ({ label, isChecked, isDisabled = false, onToggle }: SettingsSwitchProps) => (
+export const SettingsSwitch = ({
+  label,
+  isChecked,
+  isDisabled = false,
+  onToggle
+}: SettingsSwitchProps) => (
   <button
     type="button"
     role="switch"
@@ -18,14 +23,14 @@ export const SettingsSwitch = ({ label, isChecked, isDisabled = false, onToggle 
   >
     <span
       className={cn(
-        'relative h-[22px] w-10 shrink-0 rounded-full bg-switch-off transition-colors duration-200',
-        isChecked && 'bg-primary',
+        'relative h-5.5 w-10 shrink-0 rounded-full bg-switch-off transition-colors duration-200',
+        isChecked && 'bg-primary'
       )}
     >
       <span
         className={cn(
-          'absolute top-[3px] left-[3px] h-4 w-5 rounded-full bg-switch-knob shadow-sm shadow-black/20 transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
-          isChecked && 'translate-x-[14px] bg-primary-foreground',
+          'absolute top-0.75 left-0.75 h-4 w-5 rounded-full bg-switch-knob shadow-sm shadow-black/20 transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
+          isChecked && 'translate-x-3.5 bg-primary-foreground'
         )}
       />
     </span>

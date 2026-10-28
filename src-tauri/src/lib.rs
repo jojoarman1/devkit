@@ -1,7 +1,9 @@
 mod elevation;
 mod icon;
+mod memory_alert;
 mod memory_clean;
 mod monitor;
+mod plugins;
 mod settings;
 mod tray;
 mod tray_icon;
@@ -16,42 +18,39 @@ fn should_exit_for_elevation() -> bool {
         && elevation::launch_elevated().is_ok()
 }
 
-// Turns off the browser context menu and browser shortcuts (reload, print, find, downloads…).
-// Debug builds keep reload and devtools so `tauri dev` stays usable.
-fn prevent_browser_defaults<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
-    use tauri_plugin_prevent_default::{Builder, Flags};
-
-    let is_debug = cfg!(debug_assertions);
-    let flags = if is_debug {
-        Flags::all().difference(Flags::DEV_TOOLS | Flags::RELOAD)
-    } else {
-        Flags::all()
-    };
-    let builder = Builder::new().with_flags(flags);
-
-    // WebView2 settings switch these off natively instead of relying on the injected script
-    #[cfg(windows)]
-    let builder = builder.platform(
-        tauri_plugin_prevent_default::PlatformOptions::new()
-            .default_context_menus(false)
-            .browser_accelerator_keys(is_debug),
-    );
-
-    builder.build()
-}
+// Passed by the "Start with Windows" entry: launch straight into the tray
+const START_MINIMIZED_ARG: &str = "--minimized";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    elevation::wait_for_previous_instance();
     if should_exit_for_elevation() {
         return;
     }
 
     tauri::Builder::default()
+        // must be registered first: a second launch just brings the running window forward
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            tray::show_main_window(app);
+        }))
         .plugin(tauri_plugin_opener::init())
-        .plugin(prevent_browser_defaults())
+        .plugin(plugins::prevent_browser_defaults())
+        .plugin(plugins::window_state())
+        .plugin(tauri_plugin_autostart::Builder::new().arg(START_MINIMIZED_ARG).build())
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             tray::create(app)?;
+            // a shortcut already taken by another app must not stop devkit from starting
+            if let Err(error) = app.handle().plugin(plugins::toggle_shortcut()) {
+                eprintln!("{} is unavailable: {error}", plugins::TOGGLE_SHORTCUT);
+            }
             monitor::start(app.handle().clone());
+            // the window starts hidden ("visible": false) so an autostart launch never flashes it
+            if !std::env::args().any(|arg| arg == START_MINIMIZED_ARG) {
+                tray::show_main_window(app.handle());
+            }
             Ok(())
         })
         // With "minimize to tray" on, closing (X, Alt+F4) also just hides; the tray's Quit uses app.exit(),

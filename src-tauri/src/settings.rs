@@ -16,12 +16,25 @@ pub enum Theme {
     Dark,
 }
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Settings {
     pub run_as_admin: bool,
     pub minimize_to_tray: bool,
     pub theme: Theme,
+    pub notify_high_memory: bool,
+}
+
+// Hand-written so fields missing from older files get their real defaults (serde `default` uses this)
+impl Default for Settings {
+    fn default() -> Self {
+        Self {
+            run_as_admin: false,
+            minimize_to_tray: false,
+            theme: Theme::default(),
+            notify_high_memory: true,
+        }
+    }
 }
 
 fn settings_path() -> Option<PathBuf> {

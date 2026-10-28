@@ -5,4 +5,5 @@ export interface Settings {
   runAsAdmin: boolean
   minimizeToTray: boolean
   theme: Theme
+  notifyHighMemory: boolean
 }

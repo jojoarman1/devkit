@@ -24,7 +24,7 @@
   --text-metric-row--letter-spacing: -0.04em;
 
   --color-background: light-dark(#e6e6e6, #000000);
-  --color-card: light-dark(#ffffff, #1a1a1a);
+  --color-card: light-dark(#ffffff, #111111);
   --color-card-raised: light-dark(#f0f0f0, #262626);
   --color-card-stroke: light-dark(#dcdcdc, rgb(255 255 255 / 0.08));
   --color-dialog-stroke: light-dark(#2a2a2a, rgb(255 255 255 / 0.08));

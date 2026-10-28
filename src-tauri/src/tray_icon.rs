@@ -9,21 +9,23 @@ const TILE: [u8; 4] = [32, 32, 32, 255];
 const TILE_CRITICAL: [u8; 4] = [196, 43, 28, 255];
 const DOT: [u8; 4] = [255, 255, 255, 255];
 
-// The app's 5×7 digit matrix (keep in sync with PIXEL_BITMAPS in src/constants/pixel-glyphs.constants.ts)
-const DIGITS: [[&str; 7]; 10] = [
-    [".###.", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."],
-    ["..#..", ".##..", "#.#..", "..#..", "..#..", "..#..", "#####"],
-    [".###.", "#...#", "....#", "...#.", "..#..", ".#...", "#####"],
-    [".###.", "#...#", "....#", "..##.", "....#", "#...#", ".###."],
-    ["...#.", "..##.", ".#.#.", "#..#.", "#####", "...#.", "...#."],
-    ["#####", "#....", "####.", "....#", "....#", "#...#", ".###."],
-    ["..##.", ".#...", "#....", "####.", "#...#", "#...#", ".###."],
-    ["#####", "....#", "...#.", "..#..", ".#...", ".#...", ".#..."],
-    [".###.", "#...#", "#...#", ".###.", "#...#", "#...#", ".###."],
-    [".###.", "#...#", "#...#", ".####", "....#", "...#.", ".##.."],
+// Compact tray glyphs use exact 2x scaling so every stroke is equally thick.
+const DIGITS: [[&str; 5]; 10] = [
+    ["###", "#.#", "#.#", "#.#", "###"],
+    [".#.", "##.", ".#.", ".#.", "###"],
+    ["###", "..#", "###", "#..", "###"],
+    ["###", "..#", "###", "..#", "###"],
+    ["#.#", "#.#", "###", "..#", "..#"],
+    ["###", "#..", "###", "..#", "###"],
+    ["###", "#..", "###", "#.#", "###"],
+    ["###", "..#", "..#", "..#", "..#"],
+    ["###", "#.#", "###", "#.#", "###"],
+    ["###", "#.#", "###", "..#", "###"],
 ];
-const DIGIT_WIDTH: usize = 5;
-const DIGIT_HEIGHT: usize = 7;
+const GLYPH_WIDTH: usize = 3;
+const GLYPH_HEIGHT: usize = 5;
+const DIGIT_WIDTH: usize = GLYPH_WIDTH * 2;
+const DIGIT_HEIGHT: usize = GLYPH_HEIGHT * 2;
 const DIGIT_GAP: usize = 1;
 
 fn is_inside_tile(x: usize, y: usize) -> bool {
@@ -40,7 +42,7 @@ fn set_pixel(rgba: &mut [u8], x: usize, y: usize, color: [u8; 4]) {
     rgba[offset..offset + 4].copy_from_slice(&color);
 }
 
-// capped at 99: three 5×7 digits don't fit in 16 px
+// Capped at 99 so the enlarged two-digit reading fits in 16 px.
 pub fn render_ram_icon(percent: u8) -> Image<'static> {
     let percent = percent.min(99);
     let mut rgba = vec![0u8; SIZE * SIZE * 4];
@@ -60,9 +62,10 @@ pub fn render_ram_icon(percent: u8) -> Image<'static> {
 
     for (index, digit) in digits.iter().enumerate() {
         let digit_left = left + index * (DIGIT_WIDTH + DIGIT_GAP);
-        for (row, line) in DIGITS[*digit].iter().enumerate() {
-            for (column, cell) in line.bytes().enumerate() {
-                if cell == b'#' {
+        for row in 0..DIGIT_HEIGHT {
+            let line = DIGITS[*digit][row * GLYPH_HEIGHT / DIGIT_HEIGHT].as_bytes();
+            for column in 0..DIGIT_WIDTH {
+                if line[column * GLYPH_WIDTH / DIGIT_WIDTH] == b'#' {
                     set_pixel(&mut rgba, digit_left + column, top + row, DOT);
                 }
             }

@@ -77,6 +77,7 @@ pub fn start(app: AppHandle) {
     thread::spawn(move || {
         let mut monitor = Monitor::new();
         let mut tray_percent = None;
+        let mut memory_alert = crate::memory_alert::MemoryAlert::default();
 
         loop {
             thread::sleep(REFRESH_INTERVAL);
@@ -88,6 +89,7 @@ pub fn start(app: AppHandle) {
                 crate::tray::update_ram(&app, percent);
                 tray_percent = Some(percent);
             }
+            memory_alert.update(&app, percent);
 
             if app.emit(SYSTEM_STATS_EVENT, stats).is_err() {
                 break;

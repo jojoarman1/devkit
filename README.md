@@ -29,7 +29,12 @@ built into Windows 11, and on Windows 10 the installer downloads it if needed.
   administrator rights, and a shield on the button marks that.
 - **Tray:** a RAM gauge in the tray. devkit can minimize and close to the tray
   instead of quitting.
-- **Window tools:** pin the window on top of all others.
+- **Window tools:** pin the window on top of all others. Press **Ctrl+Shift+D** to show
+  or hide devkit from anywhere. It remembers where the window was, and only one
+  copy ever runs.
+- **Start with Windows:** optional, and starts straight in the tray.
+- **Notifications:** a Windows notification when RAM is almost full.
+- **Updates:** check for and install new versions from the Settings dialog.
 - **Settings** (in the **…** menu): System, Light or Dark theme, start as
   administrator, minimize and close to tray.
 
