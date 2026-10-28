@@ -1,6 +1,5 @@
 import type { ComponentProps } from 'react'
 
-// The Windows UAC shield (blue/yellow quadrants) that marks actions needing administrator rights.
 // Quadrants are separate paths, so no clipPath id is needed.
 export const ShieldIcon = (props: ComponentProps<'svg'>) => (
   <svg

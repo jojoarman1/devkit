@@ -1,6 +1,5 @@
 import type { ComponentProps } from 'react'
 
-// 10 × 10 px with 1 px diagonals corner to corner, like the Windows 11 caption glyph
 export const CloseIcon = (props: ComponentProps<'svg'>) => (
   <svg
     width={10}

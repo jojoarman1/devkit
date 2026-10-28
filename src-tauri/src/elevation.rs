@@ -63,8 +63,6 @@ pub fn launch_elevated() -> Result<(), String> {
     Err("relaunching as admin is only supported on Windows".into())
 }
 
-// Starts a second, elevated instance and closes this one.
-// Under `tauri dev` the CLI stops the dev server when this process exits, so test it with a built app.
 #[tauri::command]
 pub fn relaunch_as_admin(app: tauri::AppHandle) -> Result<(), String> {
     launch_elevated()?;
@@ -72,7 +70,6 @@ pub fn relaunch_as_admin(app: tauri::AppHandle) -> Result<(), String> {
     Ok(())
 }
 
-// Lets the UI mark admin-only actions with the UAC shield up front
 #[tauri::command]
 pub fn check_elevated() -> bool {
     is_elevated()

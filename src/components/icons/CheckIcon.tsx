@@ -2,17 +2,17 @@ import type { ComponentProps } from 'react'
 
 export const CheckIcon = (props: ComponentProps<'svg'>) => (
   <svg
-    width={12}
-    height={12}
-    viewBox="0 0 12 12"
+    width={16}
+    height={16}
+    viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth={1.2}
-    strokeLinecap="round"
+    strokeWidth={3}
+    strokeLinecap="butt"
     strokeLinejoin="round"
     aria-hidden
     {...props}
   >
-    <path d="M2 6.5 4.75 9 10 3" />
+    <path d="M4.7311 11.7118L9.6667 17L19.2689 6.7118" />
   </svg>
 )

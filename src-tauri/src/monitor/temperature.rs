@@ -7,11 +7,12 @@ const CPU_LABEL_HINTS: [&str; 4] = ["cpu", "package", "tctl", "core"];
 #[serde(rename_all = "camelCase")]
 pub struct TemperatureStats {
     cpu_celsius: Option<f32>,
+    gpu_celsius: Option<f32>,
 }
 
-// On Windows sysinfo reads ACPI thermal zones through WMI, which usually requires admin rights,
-// so the list is often empty and the frontend must handle `None`.
-pub fn read(components: &mut Components) -> TemperatureStats {
+// On Windows sysinfo only reads ACPI thermal zones via WMI, which many boards don't expose
+// (NotImplemented, even as admin), so `None` is normal.
+pub fn read(components: &mut Components, gpu_celsius: Option<f32>) -> TemperatureStats {
     components.refresh(true);
 
     let readings: Vec<(String, f32)> = components
@@ -31,5 +32,6 @@ pub fn read(components: &mut Components) -> TemperatureStats {
 
     TemperatureStats {
         cpu_celsius: hottest(true).or_else(|| hottest(false)),
+        gpu_celsius,
     }
 }

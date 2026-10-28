@@ -1,18 +1,18 @@
-import { closeWindow, minimizeWindow } from '@/api/window.api'
+import { closeWindow, hideWindow, minimizeWindow } from '@/api/window.api'
 import { CloseIcon } from '@/components/icons/CloseIcon'
 import { MinimizeIcon } from '@/components/icons/MinimizeIcon'
 import { PinIcon } from '@/components/icons/PinIcon'
 import { TitleBarButton } from '@/components/TitleBarButton'
 import { TitleBarMenu } from '@/components/TitleBarMenu'
 import { useAlwaysOnTop } from '@/hooks/useAlwaysOnTop'
+import { useSettings } from '@/hooks/useSettings'
 import { useWindowFocus } from '@/hooks/useWindowFocus'
 
-// Replaces the native caption (decorations: false) the way Spotify does: a "…" menu on the left, no title,
-// window buttons on the right. data-tauri-drag-region is not inherited by children, so it sits on the header
-// and on the empty spacer between the button groups.
+// data-tauri-drag-region is not inherited by children, so it sits on the header and on the spacer
 export const TitleBar = () => {
   const { isAlwaysOnTop, toggleAlwaysOnTop } = useAlwaysOnTop()
   const isWindowFocused = useWindowFocus()
+  const { settings } = useSettings()
 
   return (
     <header
@@ -34,8 +34,8 @@ export const TitleBar = () => {
       </TitleBarButton>
       <TitleBarButton
         isWindowFocused={isWindowFocused}
-        onClick={minimizeWindow}
-        aria-label="Minimize"
+        onClick={settings.minimizeToTray ? hideWindow : minimizeWindow}
+        aria-label={settings.minimizeToTray ? 'Minimize to tray' : 'Minimize'}
       >
         <MinimizeIcon />
       </TitleBarButton>

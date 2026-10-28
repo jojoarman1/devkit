@@ -1,6 +1,5 @@
 import type { ComponentProps } from 'react'
 
-// 10 × 10 px on the pixel grid: a 1 px line exactly on a pixel row, so it can't blur
 export const MinimizeIcon = (props: ComponentProps<'svg'>) => (
   <svg
     width={10}

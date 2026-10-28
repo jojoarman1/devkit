@@ -23,6 +23,7 @@ export interface DiskStats {
 
 export interface TemperatureStats {
   cpuCelsius: number | null
+  gpuCelsius: number | null
 }
 
 export interface ProcessStats {

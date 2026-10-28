@@ -6,8 +6,7 @@ interface TitleBarButtonProps extends ComponentProps<'button'> {
   isDanger?: boolean
 }
 
-// Native Windows 11 caption metrics, in px on purpose: system chrome must not follow the design scale.
-// 46 × 32 with a 10 px icon centred at whole pixels (18, 11); the icon dims while the window is inactive.
+// Windows 11 caption metrics in px on purpose: system chrome must not follow the design scale
 export const TitleBarButton = ({
   isWindowFocused,
   isDanger = false,

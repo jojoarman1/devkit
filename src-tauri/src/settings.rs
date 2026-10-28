@@ -2,16 +2,26 @@ use std::{fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-// Same folder Tauri's app_config_dir() resolves to. It is built by hand because the startup
-// elevation check runs before the Tauri app (and its path resolver) exists.
+// Built by hand instead of Tauri's app_config_dir(): the startup elevation check runs before the app exists.
 // Must match "identifier" in tauri.conf.json.
 const APP_IDENTIFIER: &str = "com.jojoa.devkit";
 const SETTINGS_FILE: &str = "settings.json";
 
 #[derive(Default, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Theme {
+    #[default]
+    System,
+    Light,
+    Dark,
+}
+
+#[derive(Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Settings {
     pub run_as_admin: bool,
+    pub minimize_to_tray: bool,
+    pub theme: Theme,
 }
 
 fn settings_path() -> Option<PathBuf> {
@@ -21,7 +31,6 @@ fn settings_path() -> Option<PathBuf> {
     Some(config_dir.join(APP_IDENTIFIER).join(SETTINGS_FILE))
 }
 
-// A missing or broken file just means defaults
 pub fn load() -> Settings {
     settings_path()
         .and_then(|path| fs::read_to_string(path).ok())
@@ -39,13 +48,11 @@ fn save(settings: &Settings) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn get_run_as_admin() -> bool {
-    load().run_as_admin
+pub fn get_settings() -> Settings {
+    load()
 }
 
 #[tauri::command]
-pub fn set_run_as_admin(is_enabled: bool) -> Result<(), String> {
-    let mut settings = load();
-    settings.run_as_admin = is_enabled;
+pub fn set_settings(settings: Settings) -> Result<(), String> {
     save(&settings)
 }

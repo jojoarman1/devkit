@@ -20,19 +20,22 @@ built into Windows 11, and on Windows 10 the installer downloads it if needed.
 
 ## Features
 
-- **Live resource monitor:** CPU, RAM, system disk, network speed, CPU
-  temperature and uptime, updated every second.
+- **Live resource monitor:** CPU, RAM, system disk, network speed, temperature
+  and uptime, updated every second.
 - **Top processes:** the three apps using the most CPU, with their icons, CPU %
   and memory.
 - **Memory cleaner:** frees RAM the way Mem Reduct does. It empties process
   working sets and purges the low-priority standby list. This needs
   administrator rights, and a shield on the button marks that.
-- **Window tools:** pin the window on top of all others. The **…** menu can also
-  make devkit start as administrator.
-- **Themes:** follows the Windows light or dark theme.
+- **Tray:** a RAM gauge in the tray. devkit can minimize and close to the tray
+  instead of quitting.
+- **Window tools:** pin the window on top of all others.
+- **Settings** (in the **…** menu): System, Light or Dark theme, start as
+  administrator, minimize and close to tray.
 
-CPU temperature only shows on hardware that exposes ACPI thermal zones to
-Windows. On many desktop boards it says "not supported".
+The temperature card shows the CPU when the board exposes ACPI thermal zones to
+Windows. Otherwise it shows an NVIDIA GPU, read through the driver's NVML. With
+neither, it says "not supported".
 
 ## Build from source
 

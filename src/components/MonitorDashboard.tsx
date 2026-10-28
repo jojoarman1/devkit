@@ -7,7 +7,6 @@ export const MonitorDashboard = () => {
   const stats = useSystemStats()
 
   return (
-    // Figma: 3 columns of 550 with a 16 gap; the processes card spans the full width below
     <section className="grid grid-cols-[repeat(3,550em)] gap-[16em]">
       {METRIC_CARDS.map(card => (
         <MetricCard

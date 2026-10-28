@@ -1,5 +1,6 @@
+import type { Settings } from '@/types/settings.types'
 import { invoke } from '@tauri-apps/api/core'
 
-export const getRunAsAdmin = () => invoke<boolean>('get_run_as_admin')
+export const getSettings = () => invoke<Settings>('get_settings')
 
-export const setRunAsAdmin = (isEnabled: boolean) => invoke<void>('set_run_as_admin', { isEnabled })
+export const setSettings = (settings: Settings) => invoke<void>('set_settings', { settings })

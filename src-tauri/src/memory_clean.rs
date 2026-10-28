@@ -15,7 +15,6 @@ fn available_bytes() -> u64 {
     system.available_memory()
 }
 
-// Frees RAM the way Mem Reduct does and returns how many bytes became available
 #[tauri::command]
 pub async fn clean_memory() -> Result<u64, CleanError> {
     tauri::async_runtime::spawn_blocking(platform::clean)

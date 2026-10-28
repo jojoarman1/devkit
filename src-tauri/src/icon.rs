@@ -22,7 +22,6 @@ fn read_icon_data_url(path: &str) -> Result<String, String> {
     Ok(format!("data:image/png;base64,{}", STANDARD.encode(png)))
 }
 
-// The icon an executable shows in Explorer, as a PNG data URL. The frontend caches results per path.
 #[tauri::command]
 pub async fn get_app_icon(path: String) -> Result<String, String> {
     tauri::async_runtime::spawn_blocking(move || read_icon_data_url(&path))

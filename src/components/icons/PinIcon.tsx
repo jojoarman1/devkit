@@ -4,7 +4,6 @@ interface PinIconProps extends ComponentProps<'svg'> {
   isFilled?: boolean
 }
 
-// Pixel-drawn 10 × 10 upright pin; every edge is on whole pixels (crispEdges), so 1 px lines stay sharp
 export const PinIcon = ({ isFilled = false, ...props }: PinIconProps) => (
   <svg
     width={10}

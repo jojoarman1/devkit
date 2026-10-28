@@ -1,5 +1,6 @@
 mod cpu;
 mod disk;
+mod gpu;
 mod memory;
 mod network;
 mod process;
@@ -35,6 +36,7 @@ struct Monitor {
     networks: Networks,
     disks: Disks,
     components: Components,
+    gpu: gpu::GpuMonitor,
     last_tick: Instant,
 }
 
@@ -46,6 +48,7 @@ impl Monitor {
             networks: Networks::new_with_refreshed_list(),
             disks: Disks::new_with_refreshed_list(),
             components: Components::new_with_refreshed_list(),
+            gpu: gpu::GpuMonitor::new(),
             last_tick: Instant::now(),
         };
         // CPU usage (global and per process) is a delta between two reads, so take a baseline
@@ -63,7 +66,7 @@ impl Monitor {
             memory: memory::read(&mut self.system),
             network: network::read(&mut self.networks, elapsed),
             disks: disk::read(&mut self.disks),
-            temperature: temperature::read(&mut self.components),
+            temperature: temperature::read(&mut self.components, self.gpu.temperature()),
             processes: process::read(&mut self.system),
             uptime_seconds: System::uptime(),
         }
@@ -73,10 +76,20 @@ impl Monitor {
 pub fn start(app: AppHandle) {
     thread::spawn(move || {
         let mut monitor = Monitor::new();
+        let mut tray_percent = None;
 
         loop {
             thread::sleep(REFRESH_INTERVAL);
-            if app.emit(SYSTEM_STATS_EVENT, monitor.read()).is_err() {
+            let stats = monitor.read();
+
+            // rebuilding the tray icon is a native call, so only do it when the number changes
+            let percent = stats.memory.usage_percent();
+            if tray_percent != Some(percent) {
+                crate::tray::update_ram(&app, percent);
+                tray_percent = Some(percent);
+            }
+
+            if app.emit(SYSTEM_STATS_EVENT, stats).is_err() {
                 break;
             }
         }

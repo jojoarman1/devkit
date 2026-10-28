@@ -6,7 +6,6 @@ interface ProcessesCardProps {
   processes: ProcessStats[] | null
 }
 
-// Figma gives this card 280 of height: a header and the top 3 processes as small rows
 export const ProcessesCard = ({ processes }: ProcessesCardProps) => (
   <Card className="col-span-full h-[280em] pt-[44em]">
     <div className="flex items-baseline gap-[16em]">

@@ -1,6 +1,5 @@
 import type { ComponentProps } from 'react'
 
-// Three 2 × 2 px dots on whole pixels (16 × 2), centred at (15, 15) in the 46 × 32 caption button
 export const MoreIcon = (props: ComponentProps<'svg'>) => (
   <svg
     width={16}

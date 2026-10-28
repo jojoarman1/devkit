@@ -15,6 +15,5 @@ export interface MetricCardConfig {
   id: string
   title: string
   getReading: (stats: SystemStats) => MetricReading
-  // optional control rendered at the bottom of the card (e.g. the RAM clean button)
   Action?: ComponentType
 }

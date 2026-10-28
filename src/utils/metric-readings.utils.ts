@@ -40,11 +40,14 @@ export const getNetworkReading = ({ network }: SystemStats): MetricReading => {
   }
 }
 
-export const getTemperatureReading = ({ temperature }: SystemStats): MetricReading => {
-  if (temperature.cpuCelsius === null) return UNSUPPORTED_READING
+// CPU when the board exposes it, otherwise the GPU (NVML); the status names the source
+export const getTemperatureReading = ({ temperature: { cpuCelsius, gpuCelsius } }: SystemStats): MetricReading => {
+  const source = cpuCelsius !== null ? 'cpu' : 'gpu'
+  const reading = cpuCelsius ?? gpuCelsius
+  if (reading === null) return UNSUPPORTED_READING
 
-  const celsius = Math.round(temperature.cpuCelsius)
-  return { status: `${getMetricStatusLabel(celsius, TEMPERATURE_THRESHOLDS)}, °C`, value: String(celsius) }
+  const celsius = Math.round(reading)
+  return { status: `${source} °C, ${getMetricStatusLabel(celsius, TEMPERATURE_THRESHOLDS)}`, value: String(celsius) }
 }
 
 export const getUptimeReading = ({ uptimeSeconds }: SystemStats): MetricReading => {

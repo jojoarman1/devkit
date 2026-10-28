@@ -14,9 +14,8 @@ pub struct CpuMonitor {
 }
 
 impl CpuMonitor {
-    // sysinfo's global usage on Windows comes from PDH counters, which read a constant 0
-    // on machines with disabled or corrupted perf counters (this dev machine is one).
-    // GetSystemTimes is what Task Manager relies on and always works.
+    // sysinfo uses PDH counters on Windows, which read a constant 0 when perf counters are broken
+    // (they are on the dev machine); GetSystemTimes always works.
     #[cfg(windows)]
     pub fn read(&mut self, _system: &mut System) -> CpuStats {
         let current = windows_times::read();

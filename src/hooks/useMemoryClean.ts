@@ -14,7 +14,6 @@ export const useMemoryClean = () => {
   })
   const relaunch = useMutation({ mutationFn: relaunchAsAdmin })
 
-  // known up front (shield on the button), or learned from a refused clean
   const isElevationRequired = isElevated === false || clean.error?.kind === 'adminRequired'
   const isPending = clean.isPending || relaunch.isPending
   // Under `tauri dev` a relaunch opens the debug exe's console window and the new copy has no dev server

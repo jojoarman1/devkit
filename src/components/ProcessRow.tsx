@@ -6,8 +6,7 @@ interface ProcessRowProps {
   process: ProcessStats
 }
 
-// One subgrid row of the parent list (icon, name, CPU, memory). Text classes stay on the leaf spans,
-// so the grid's em sizes still resolve against the unit font size.
+// Text classes stay on the leaf spans, so the grid's em sizes still resolve against the unit font size
 export const ProcessRow = ({ process }: ProcessRowProps) => {
   const memory = formatBytes(process.memoryBytes)
 
