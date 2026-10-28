@@ -47,3 +47,7 @@ bun run tauri build    # build the installers into src-tauri/target/release/bund
 
 Built with [Tauri 2](https://v2.tauri.app), React 19, TypeScript, Tailwind CSS 4
 and GSAP.
+
+## License
+
+[MIT](LICENSE). The bundled Geist font is licensed under the [SIL Open Font License](src/assets/fonts/OFL.txt).
