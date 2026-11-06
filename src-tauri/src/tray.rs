@@ -4,7 +4,7 @@ use tauri::{
     App, AppHandle, Manager,
 };
 
-use crate::tray_icon::render_ram_icon;
+use crate::{tray_icon::render_ram_icon, webview_memory};
 
 const TRAY_ID: &str = "main";
 const SHOW_ITEM_ID: &str = "show";
@@ -12,10 +12,30 @@ const QUIT_ITEM_ID: &str = "quit";
 
 pub fn show_main_window(app: &AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
+        webview_memory::set_low(&window, false);
         let _ = window.unminimize();
         let _ = window.show();
         let _ = window.set_focus();
     }
+}
+
+pub fn hide_main_window(app: &AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.hide();
+        webview_memory::set_low(&window, true);
+    }
+}
+
+// The webview only has something to render while the window is on screen
+pub fn is_main_window_on_screen(app: &AppHandle) -> bool {
+    app.get_webview_window("main").is_some_and(|window| {
+        window.is_visible().unwrap_or(false) && !window.is_minimized().unwrap_or(false)
+    })
+}
+
+#[tauri::command]
+pub fn hide_to_tray(app: AppHandle) {
+    hide_main_window(&app);
 }
 
 // Global shortcut: hide when devkit is in front, otherwise bring it forward
@@ -27,7 +47,7 @@ pub fn toggle_main_window(app: &AppHandle) {
         && !window.is_minimized().unwrap_or(false)
         && window.is_focused().unwrap_or(false);
     if is_in_front {
-        let _ = window.hide();
+        hide_main_window(app);
     } else {
         show_main_window(app);
     }

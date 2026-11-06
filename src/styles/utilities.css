@@ -3,31 +3,11 @@
   corner-shape: squircle;
 }
 
-.ram-glow-noise {
-  background-image: url('/ram-grain.png');
-  opacity: 0.7;
-  mix-blend-mode: overlay;
-  filter: contrast(1.6);
-  mask-image: linear-gradient(to bottom, #000, rgb(0 0 0 / 70%) 20%, transparent 52%);
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .ram-glow-noise-active {
-    animation: ram-grain 0.5s steps(6) infinite;
-  }
   .ram-glow-active {
     background-size: 100% 115%;
     animation: ram-glow-breathe 4s ease-in-out infinite;
   }
-}
-
-@keyframes ram-grain {
-  0%, 100% { background-position: 0 0; }
-  17% { background-position: -25px -50px; }
-  33% { background-position: 15px -75px; }
-  50% { background-position: 60px 45px; }
-  67% { background-position: 45px 20px; }
-  83% { background-position: -5px 35px; }
 }
 
 @keyframes ram-glow-breathe {

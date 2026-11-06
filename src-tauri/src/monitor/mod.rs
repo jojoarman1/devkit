@@ -91,6 +91,10 @@ pub fn start(app: AppHandle) {
             }
             memory_alert.update(&app, percent);
 
+            // a hidden page would still re-render every second and keep its memory warm
+            if !crate::tray::is_main_window_on_screen(&app) {
+                continue;
+            }
             if app.emit(SYSTEM_STATS_EVENT, stats).is_err() {
                 break;
             }

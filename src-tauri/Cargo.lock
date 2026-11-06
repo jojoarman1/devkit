@@ -810,7 +810,7 @@ dependencies = [
 
 [[package]]
 name = "devkit"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "base64 0.21.7",
  "file_icon_provider",
@@ -830,6 +830,8 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tauri-plugin-updater",
  "tauri-plugin-window-state",
+ "webview2-com",
+ "windows",
  "windows-sys 0.61.2",
 ]
 

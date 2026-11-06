@@ -28,9 +28,7 @@ export const MetricCard = ({ title, reading, action, isHighMemory = false }: Met
         <span className={cn('absolute inset-0', isHighMemory && 'ram-glow-active')} style={{
           background: 'linear-gradient(to bottom, #FF0004 0%, rgb(255 0 4 / 80%) 12%, rgb(255 0 4 / 35%) 30%, transparent 52%)',
           maskImage: 'radial-gradient(ellipse 90% 80% at 50% 100%, transparent 68%, #000 92%)',
-        }}>
-          <span className={cn('ram-glow-noise absolute inset-0', isHighMemory && 'ram-glow-noise-active')} />
-        </span>
+        }} />
       </span>
       <h2 className="text-metric-title">{title}</h2>
       <p className="truncate text-metric-status text-foreground/60">{status}</p>
