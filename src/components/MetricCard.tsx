@@ -1,6 +1,8 @@
 import { Card } from '@/components/Card'
+import { CardChart } from '@/components/CardChart'
 import { PixelNumber } from '@/components/PixelNumber'
 import { LOADING_READING } from '@/constants/metric.constants'
+import type { MetricChart } from '@/types/metric-chart.types'
 import type { MetricReading } from '@/types/metric.types'
 import { cn } from '@/utils/cn.utils'
 import type { ReactNode } from 'react'
@@ -10,10 +12,11 @@ interface MetricCardProps {
   reading: MetricReading | null
   // pinned to the card's bottom edge by its own mt-auto
   action?: ReactNode
+  chart?: MetricChart | null
   isHighMemory?: boolean
 }
 
-export const MetricCard = ({ title, reading, action, isHighMemory = false }: MetricCardProps) => {
+export const MetricCard = ({ title, reading, action, chart, isHighMemory = false }: MetricCardProps) => {
   const { status, value } = reading ?? LOADING_READING
 
   return (
@@ -37,6 +40,7 @@ export const MetricCard = ({ title, reading, action, isHighMemory = false }: Met
         // -29 drops the empty space below the baseline in the 200 line box, so a bottom action fits
         className="mt-[13em] mb-[-29em] h-[200em] w-fit max-w-full"
       />
+      {!!chart && <CardChart chart={chart} />}
       {action}
     </Card>
   )

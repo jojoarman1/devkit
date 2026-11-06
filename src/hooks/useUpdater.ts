@@ -1,6 +1,8 @@
+import { logError } from '@/api/log.api'
 import { checkForUpdate, getAppVersion, installUpdate } from '@/api/updates.api'
 import { updatesKeys } from '@/api/updates.keys'
 import { UPDATE_LABELS } from '@/constants/updates.constants'
+import { parseChangelogEntries } from '@/utils/changelog.utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useUpdater = () => {
@@ -9,8 +11,14 @@ export const useUpdater = () => {
     queryFn: getAppVersion,
     staleTime: Infinity,
   })
-  const checkMutation = useMutation({ mutationFn: checkForUpdate })
-  const installMutation = useMutation({ mutationFn: installUpdate })
+  const checkMutation = useMutation({
+    mutationFn: checkForUpdate,
+    onError: cause => logError('update check failed', cause),
+  })
+  const installMutation = useMutation({
+    mutationFn: installUpdate,
+    onError: cause => logError('update install failed', cause),
+  })
 
   const update = checkMutation.data
   const isBusy = checkMutation.isPending || installMutation.isPending
@@ -29,6 +37,8 @@ export const useUpdater = () => {
     label: getLabel(),
     isBusy,
     isUpdateAvailable: !!update,
+    newVersion: update?.version ?? null,
+    changes: parseChangelogEntries(update?.body),
     run: () => (update ? installMutation.mutate(update) : checkMutation.mutate()),
   }
 }

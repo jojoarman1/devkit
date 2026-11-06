@@ -67,5 +67,5 @@ pub fn get_settings() -> Settings {
 
 #[tauri::command]
 pub fn set_settings(settings: Settings) -> Result<(), String> {
-    save(&settings)
+    save(&settings).inspect_err(|error| log::warn!("saving settings failed: {error}"))
 }

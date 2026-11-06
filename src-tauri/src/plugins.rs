@@ -30,6 +30,19 @@ pub fn prevent_browser_defaults<R: Runtime>() -> TauriPlugin<R> {
     builder.build()
 }
 
+// Release builds have no console, so this file is the only trace of a failure on a user's machine:
+// %LOCALAPPDATA%\com.jojoa.devkit\logs\devkit.log, one file capped at 1 MB
+pub fn log<R: Runtime>() -> TauriPlugin<R> {
+    use tauri_plugin_log::{Builder, RotationStrategy, TimezoneStrategy};
+
+    Builder::new()
+        .level(log::LevelFilter::Info)
+        .max_file_size(1_000_000)
+        .rotation_strategy(RotationStrategy::KeepOne)
+        .timezone_strategy(TimezoneStrategy::UseLocal)
+        .build()
+}
+
 // Position only: the size is fixed, and visibility belongs to the tray/autostart logic
 pub fn window_state<R: Runtime>() -> TauriPlugin<R> {
     tauri_plugin_window_state::Builder::new()

@@ -1,3 +1,4 @@
+import { onOpenSettingsRequest } from '@/api/tray.api'
 import { MoreIcon } from '@/components/icons/MoreIcon'
 import { SettingsDialog } from '@/components/SettingsDialog'
 import { TitleBarButton } from '@/components/TitleBarButton'
@@ -23,6 +24,14 @@ export const TitleBarMenu = ({ isWindowFocused }: TitleBarMenuProps) => {
     generationRef.current += 1
     void menuRef.current?.close().catch(console.error)
     menuRef.current = null
+  }, [])
+
+  // the tray menu's "Settings…" shows the window and asks for the dialog
+  useEffect(() => {
+    const unlistenPromise = onOpenSettingsRequest(() => setIsSettingsOpen(true))
+    return () => {
+      unlistenPromise.then(unlisten => unlisten())
+    }
   }, [])
 
   const openMenu = async (event: MouseEvent<HTMLButtonElement>) => {

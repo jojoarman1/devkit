@@ -8,7 +8,7 @@ import {
 import type { MetricReading } from '@/types/metric.types'
 import type { SystemStats } from '@/types/system.types'
 import { formatBytes, formatUptime } from '@/utils/format.utils'
-import { getMetricStatusLabel, getUsagePercent } from '@/utils/metric.utils'
+import { getMetricStatusLabel, getSystemDisk, getUsagePercent } from '@/utils/metric.utils'
 
 // The number carries no unit sign; where the unit isn't obvious it goes into the status line
 
@@ -23,7 +23,7 @@ export const getMemoryReading = ({ memory }: SystemStats): MetricReading => {
 }
 
 export const getDiskReading = ({ disks }: SystemStats): MetricReading => {
-  const disk = disks.find(({ isSystem }) => isSystem) ?? disks[0]
+  const disk = getSystemDisk(disks)
   if (!disk) return UNAVAILABLE_READING
 
   const percent = getUsagePercent(disk.totalBytes - disk.availableBytes, disk.totalBytes)

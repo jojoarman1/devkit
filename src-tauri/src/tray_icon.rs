@@ -42,6 +42,43 @@ fn set_pixel(rgba: &mut [u8], x: usize, y: usize, color: [u8; 4]) {
     rgba[offset..offset + 4].copy_from_slice(&color);
 }
 
+// The Windows UAC shield, in the shield-blue / shield-yellow tokens of ShieldIcon.tsx
+const SHIELD_BLUE: [u8; 4] = [30, 115, 232, 255];
+const SHIELD_YELLOW: [u8; 4] = [255, 200, 61, 255];
+const SHIELD: [&str; SIZE] = [
+    "................",
+    ".......BY.......",
+    ".....BBBYYY.....",
+    "..BBBBBBYYYYYY..",
+    "..BBBBBBYYYYYY..",
+    "..BBBBBBYYYYYY..",
+    "..BBBBBBYYYYYY..",
+    "..BBBBBBYYYYYY..",
+    "..YYYYYYBBBBBB..",
+    "..YYYYYYBBBBBB..",
+    "...YYYYYBBBBB...",
+    "...YYYYYBBBBB...",
+    "....YYYYBBBB....",
+    ".....YYYBBB.....",
+    "......YYBB......",
+    ".......YB.......",
+];
+
+// Marks a tray menu item that needs admin rights, like the shield on the RAM card's button
+pub fn render_shield_icon() -> Image<'static> {
+    let mut rgba = vec![0u8; SIZE * SIZE * 4];
+    for (y, line) in SHIELD.iter().enumerate() {
+        for (x, cell) in line.bytes().enumerate() {
+            match cell {
+                b'B' => set_pixel(&mut rgba, x, y, SHIELD_BLUE),
+                b'Y' => set_pixel(&mut rgba, x, y, SHIELD_YELLOW),
+                _ => {}
+            }
+        }
+    }
+    Image::new_owned(rgba, SIZE as u32, SIZE as u32)
+}
+
 // Capped at 99 so the enlarged two-digit reading fits in 16 px.
 pub fn render_ram_icon(percent: u8) -> Image<'static> {
     let percent = percent.min(99);

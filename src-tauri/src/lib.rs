@@ -3,10 +3,12 @@ mod icon;
 mod memory_alert;
 mod memory_clean;
 mod monitor;
+mod notify;
 mod plugins;
 mod settings;
 mod tray;
 mod tray_icon;
+mod tray_menu;
 mod webview_memory;
 
 use tauri::Manager;
@@ -18,10 +20,10 @@ fn should_exit_for_elevation() -> bool {
     !cfg!(debug_assertions)
         && settings::load().run_as_admin
         && !elevation::is_elevated()
-        && elevation::launch_elevated().is_ok()
+        && elevation::launch_elevated(&[]).is_ok()
 }
 
-// Passed by the "Start with Windows" entry: launch straight into the tray
+// Passed by the "Start with Windows" entry and the tray's "Free memory": launch straight into the tray
 const START_MINIMIZED_ARG: &str = "--minimized";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -36,18 +38,26 @@ pub fn run() {
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             tray::show_main_window(app);
         }))
+        // early, so the plugins and setup below can already log
+        .plugin(plugins::log())
         .plugin(tauri_plugin_opener::init())
         .plugin(plugins::prevent_browser_defaults())
         .plugin(plugins::window_state())
         .plugin(tauri_plugin_autostart::Builder::new().arg(START_MINIMIZED_ARG).build())
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
         .setup(|app| {
+            log::info!(
+                "devkit {} started, elevated: {}",
+                app.package_info().version,
+                elevation::is_elevated()
+            );
             tray::create(app)?;
             // a shortcut already taken by another app must not stop devkit from starting
             if let Err(error) = app.handle().plugin(plugins::toggle_shortcut()) {
-                eprintln!("{} is unavailable: {error}", plugins::TOGGLE_SHORTCUT);
+                log::warn!("{} is unavailable: {error}", plugins::TOGGLE_SHORTCUT);
             }
             monitor::start(app.handle().clone());
             // the window starts hidden ("visible": false) so an autostart launch never flashes it
@@ -55,6 +65,9 @@ pub fn run() {
                 tray::hide_main_window(app.handle());
             } else {
                 tray::show_main_window(app.handle());
+            }
+            if std::env::args().any(|arg| arg == tray_menu::CLEAN_MEMORY_ARG) {
+                tray_menu::free_memory(app.handle());
             }
             Ok(())
         })

@@ -1,6 +1,6 @@
 [package]
 name = "devkit"
-version = "0.2.2"
+version = "0.2.3"
 description = "Desktop toolbox for developers: resource monitor, memory cleaner and more"
 authors = ["jojoarmani"]
 license = "MIT"
@@ -29,6 +29,7 @@ png = "0.18.1"
 base64 = "0.21"
 nvml-wrapper = "0.13.0"
 tauri-plugin-prevent-default = { version = "6.0.1", features = ["platform-windows"] }
+log = "0.4"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
@@ -47,7 +48,9 @@ windows = "0.62"
 
 [target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
 tauri-plugin-autostart = "2.7.0"
+tauri-plugin-dialog = "2"
 tauri-plugin-global-shortcut = "2.4.1"
+tauri-plugin-log = "2"
 tauri-plugin-notification = "2.8.0"
 tauri-plugin-process = "2.4.0"
 tauri-plugin-single-instance = "2.5.5"

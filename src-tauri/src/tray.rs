@@ -1,14 +1,11 @@
 use tauri::{
-    menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     App, AppHandle, Manager,
 };
 
-use crate::{tray_icon::render_ram_icon, webview_memory};
+use crate::{tray_icon::render_ram_icon, tray_menu, webview_memory};
 
 const TRAY_ID: &str = "main";
-const SHOW_ITEM_ID: &str = "show";
-const QUIT_ITEM_ID: &str = "quit";
 
 pub fn show_main_window(app: &AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
@@ -54,20 +51,14 @@ pub fn toggle_main_window(app: &AppHandle) {
 }
 
 pub fn create(app: &App) -> tauri::Result<()> {
-    let show = MenuItem::with_id(app, SHOW_ITEM_ID, "Show devkit", true, None::<&str>)?;
-    let quit = MenuItem::with_id(app, QUIT_ITEM_ID, "Quit", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show, &quit])?;
+    let menu = tray_menu::build(app)?;
 
     TrayIconBuilder::with_id(TRAY_ID)
         .icon(render_ram_icon(0))
         .tooltip("devkit")
         .menu(&menu)
         .show_menu_on_left_click(false)
-        .on_menu_event(|app, event| match event.id.as_ref() {
-            SHOW_ITEM_ID => show_main_window(app),
-            QUIT_ITEM_ID => app.exit(0),
-            _ => {}
-        })
+        .on_menu_event(tray_menu::handle_event)
         .on_tray_icon_event(|tray, event| {
             if let TrayIconEvent::Click {
                 button: MouseButton::Left,
@@ -87,4 +78,5 @@ pub fn update_ram(app: &AppHandle, percent: u8) {
         let _ = tray.set_icon(Some(render_ram_icon(percent)));
         let _ = tray.set_tooltip(Some(format!("devkit: RAM {percent}%")));
     }
+    tray_menu::set_ram_percent(app, percent);
 }

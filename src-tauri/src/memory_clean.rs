@@ -17,11 +17,21 @@ fn available_bytes() -> u64 {
 
 #[tauri::command]
 pub async fn clean_memory() -> Result<u64, CleanError> {
-    tauri::async_runtime::spawn_blocking(platform::clean)
+    tauri::async_runtime::spawn_blocking(clean)
         .await
         .map_err(|error| CleanError::Failed {
             message: error.to_string(),
         })?
+}
+
+// Shared by the RAM card's button and the tray menu. Blocking: call it off the main thread.
+pub fn clean() -> Result<u64, CleanError> {
+    let result = platform::clean();
+    match &result {
+        Ok(freed) => log::info!("memory clean freed {freed} bytes"),
+        Err(error) => log::warn!("memory clean failed: {error:?}"),
+    }
+    result
 }
 
 #[cfg(windows)]

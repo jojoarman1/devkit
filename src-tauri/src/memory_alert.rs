@@ -1,5 +1,4 @@
 use tauri::AppHandle;
-use tauri_plugin_notification::NotificationExt;
 
 const ALERT_PERCENT: u8 = 90;
 // Re-arms only after usage drops clearly below the alert, so hovering around 90% doesn't spam
@@ -25,11 +24,10 @@ impl MemoryAlert {
         if !crate::settings::load().notify_high_memory {
             return;
         }
-        let _ = app
-            .notification()
-            .builder()
-            .title("RAM is almost full")
-            .body(format!("Memory usage is {percent}%. You can free some from the RAM card in devkit."))
-            .show();
+        crate::notify::show(
+            app,
+            "RAM is almost full",
+            &format!("Memory usage is {percent}%. Free some from the tray menu or the RAM card."),
+        );
     }
 }

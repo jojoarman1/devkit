@@ -13,6 +13,8 @@
     "core:window:allow-set-theme",
     "autostart:default",
     "updater:default",
+    "log:default",
+    "dialog:default",
     "process:allow-restart"
   ]
 }

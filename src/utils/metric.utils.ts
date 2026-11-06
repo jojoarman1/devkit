@@ -1,5 +1,8 @@
 import { METRIC_STATUS_LABELS } from '@/constants/metric.constants'
 import type { MetricStatus, MetricThresholds } from '@/types/metric.types'
+import type { DiskStats } from '@/types/system.types'
+
+export const getSystemDisk = (disks: DiskStats[]) => disks.find(({ isSystem }) => isSystem) ?? disks[0]
 
 export const getMetricStatus = (percent: number, thresholds: MetricThresholds): MetricStatus => {
   if (percent >= thresholds.critical) return 'critical'

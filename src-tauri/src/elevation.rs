@@ -45,11 +45,11 @@ mod platform {
 
     // "runas" shows the UAC prompt; ShellExecuteW returns a value > 32 on success.
     // Our own arguments are forwarded, so an autostart launch (--minimized) stays in the tray once elevated.
-    pub fn launch_elevated() -> Result<(), String> {
+    pub fn launch_elevated(extra_args: &[&str]) -> Result<(), String> {
         let exe = std::env::current_exe().map_err(|error| error.to_string())?;
-        let arguments = std::env::args()
-            .skip(1)
-            .filter(|arg| !arg.starts_with(WAIT_FOR_PID_ARG))
+        let forwarded = std::env::args().skip(1).filter(|arg| !arg.starts_with(WAIT_FOR_PID_ARG));
+        let arguments = forwarded
+            .chain(extra_args.iter().map(|arg| arg.to_string()))
             .chain(iter::once(format!("{WAIT_FOR_PID_ARG}{}", std::process::id())))
             .collect::<Vec<_>>()
             .join(" ");
@@ -94,7 +94,7 @@ pub fn is_elevated() -> bool {
 }
 
 #[cfg(not(windows))]
-pub fn launch_elevated() -> Result<(), String> {
+pub fn launch_elevated(_extra_args: &[&str]) -> Result<(), String> {
     Err("relaunching as admin is only supported on Windows".into())
 }
 
@@ -110,7 +110,7 @@ pub fn wait_for_previous_instance() {
 
 #[tauri::command]
 pub fn relaunch_as_admin(app: tauri::AppHandle) -> Result<(), String> {
-    launch_elevated()?;
+    launch_elevated(&[])?;
     app.exit(0);
     Ok(())
 }

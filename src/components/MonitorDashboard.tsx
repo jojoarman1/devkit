@@ -6,7 +6,7 @@ import { useSystemStats } from '@/hooks/useSystemStats'
 import { getUsagePercent } from '@/utils/metric.utils'
 
 export const MonitorDashboard = () => {
-  const stats = useSystemStats()
+  const { stats, history } = useSystemStats()
 
   return (
     <section className="grid grid-cols-[repeat(3,550em)] gap-[16em]">
@@ -16,6 +16,7 @@ export const MonitorDashboard = () => {
           title={card.title}
           isHighMemory={card.id === 'ram' && !!stats && getUsagePercent(stats.memory.usedBytes, stats.memory.totalBytes) >= MEMORY_THRESHOLDS.high}
           reading={stats ? card.getReading(stats) : null}
+          chart={stats && card.getChart ? card.getChart(stats, history) : null}
           action={!!card.Action && <card.Action />}
         />
       ))}
