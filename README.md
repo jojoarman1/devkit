@@ -2,6 +2,10 @@
 
 A small Windows desktop toolbox for developers.
 
+<p align="center">
+  <img src="docs/screenshot-light.png" alt="devkit in the light theme: CPU, RAM, disk, network, temperature and uptime cards above the top processes" width="760">
+</p>
+
 ## Download
 
 **[Download the latest release](https://github.com/jojoarman1/devkit/releases/latest)**
